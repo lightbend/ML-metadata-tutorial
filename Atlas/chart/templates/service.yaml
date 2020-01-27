@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: atlas
+  namespace :  {{ .Values.namespace }}
+  labels:
+    app: atlas
+    app.kubernetes.io/name: {{ include "atlas.name" . }}
+    helm.sh/chart: {{ include "atlas.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+spec:
+  ports:
+  - name: web
+    port: 21000
+    targetPort: 21000
+  selector:
+    app.kubernetes.io/name: {{ include "atlas.name" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}

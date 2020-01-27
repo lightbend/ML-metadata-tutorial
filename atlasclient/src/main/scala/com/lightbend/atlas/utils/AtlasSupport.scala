@@ -1,0 +1,187 @@
+package com.lightbend.atlas.utils
+
+import com.google.common.collect.ImmutableSet
+import com.sun.jersey.core.util.MultivaluedMapImpl
+import org.apache.atlas.AtlasClientV2
+import org.apache.atlas.`type`.AtlasTypeUtil
+import org.apache.atlas.model.SearchFilter
+import org.apache.atlas.model.instance.AtlasEntity
+import org.apache.atlas.model.instance.EntityMutations.EntityOperation
+import org.apache.atlas.model.typedef.AtlasRelationshipDef._
+import org.apache.atlas.model.typedef.AtlasStructDef.AtlasAttributeDef.Cardinality
+import org.apache.atlas.model.typedef.AtlasTypesDef
+import org.apache.commons.collections.CollectionUtils
+
+import com.lightbend.atlas.metadata.MetadataSupport._
+
+import scala.collection.JavaConverters._
+
+class AtlasSupport(user : String, passw : String, url : String) {
+
+  var client = new AtlasClientV2(Array(url), Array(user, passw))
+
+  // Reset client
+  def resetConnection() : Unit = {
+    client.close()
+    client = new AtlasClientV2(Array(url), Array(user, passw))
+  }
+
+  // Create Atlas entity
+  def createInstance(entity: AtlasEntity) : AtlasEntity = {
+
+    try {
+      val response = client.createEntity(new AtlasEntity.AtlasEntityWithExtInfo(entity))
+      val entities = response.getEntitiesByOperation(EntityOperation.CREATE)
+      if (CollectionUtils.isNotEmpty(entities)) {
+        val getByGuidResponse = client.getEntityByGuid(entities.get(0).getGuid)
+        val ret = getByGuidResponse.getEntity
+        System.out.println(s"Created entity of type ${ret.getTypeName}, with name ${ret.getAttribute(REFERENCEABLE_ATTRIBUTE_NAME)} and guid: ${ret.getGuid}")
+        ret
+      }
+      else {
+        val guids = response.getGuidAssignments()
+        if (guids.size() > 0) {
+          val guid = guids.values().asScala.toList.head
+          val ret = client.getEntityByGuid(guid).getEntity
+          System.out.println(s"Reading existing entity of type ${ret.getTypeName}, with name ${ret.getAttribute(REFERENCEABLE_ATTRIBUTE_NAME)} and guid: ${ret.getGuid}")
+          ret
+        }else
+          null
+      }
+    }catch {
+      case t: Throwable =>
+        t.printStackTrace()
+        null
+    }
+  }
+
+  // Create Atlas type
+  def createType(`type` : AtlasTypesDef): AtlasTypesDef = {
+    // Check if type exists
+    val params = new MultivaluedMapImpl()
+    if(`type`.getEntityDefs.size() > 0) params.add(SearchFilter.PARAM_NAME, `type`.getEntityDefs.get(0).getName)
+    if(`type`.getRelationshipDefs.size() > 0) params.add(SearchFilter.PARAM_NAME, `type`.getRelationshipDefs.get(0).getName)
+    if(`type`.getClassificationDefs.size() > 0) params.add(SearchFilter.PARAM_NAME, `type`.getClassificationDefs.get(0).getName)
+    try{
+      val search = client.getAllTypeDefs(new SearchFilter(params))
+      if((search.getEntityDefs.size() > 0) || (search.getRelationshipDefs.size() > 0) || (search.getClassificationDefs.size() > 0)){
+        println(s"Type already exists")
+        search
+      } else {
+        val result = client.createAtlasTypeDefs(`type`)
+        println(s"Type is created with result - $result")
+        result
+      }
+    }catch {
+      case t: Throwable =>
+        t.printStackTrace()
+        null
+    }
+  }
+
+  // Delete classification by name
+  def deleteClassification(name : String) : Unit = {
+    val classification = AtlasTypeUtil.createTraitTypeDef(name, "", ImmutableSet.of[String]())
+    val definition = AtlasTypeUtil.getTypesDef(classification)
+    try {
+      val result = client.deleteAtlasTypeDefs(definition)
+      println(s"Classification $name is deleted with result - $result")
+    }catch {
+      case t: Throwable =>
+        t.printStackTrace()
+    }
+  }
+
+  //  def getEntitiesByClassification(classification: String) : Unit = {}
+
+  def deleteEntity(entitytype : String, name : String) : Unit = {
+    try{
+      val result = client.getEntitiesByAttribute(entitytype, Seq(Map(REFERENCEABLE_ATTRIBUTE_NAME -> name).asJava).asJava)
+      result.getEntities.size() match {
+        case l if (l > 0) =>
+          val guid = result.getEntities.get(0).getGuid
+          deleteEntity(guid)
+        case _ =>
+      }
+    }catch{
+      case t: Throwable =>
+        t.printStackTrace()
+    }
+  }
+
+  // Delete entity by GUID
+  def deleteEntity(guid : String) : Unit = {
+    try {
+      val result = client.deleteEntityByGuid(guid)
+      println(s"Entity $guid is deleted with result - $result")
+    }catch {
+      case t: Throwable =>
+        t.printStackTrace()
+    }
+  }
+
+  // Create Streamlet type
+  def createStreamletType() = {
+
+    // name, description, createTime and owner are inherited from process
+    val procType = AtlasTypeUtil.createClassTypeDef(STREAMLET_TYPE, "Pipeline Streamlet Type", "1.0", ImmutableSet.of("Process"),
+      AtlasTypeUtil.createRequiredAttrDef("version", "string"),
+      AtlasTypeUtil.createOptionalAttrDef("inputQueues", "array<DataSet>"),
+      AtlasTypeUtil.createOptionalAttrDef("outputQueues", "array<DataSet>"),
+      AtlasTypeUtil.createOptionalAttrDef("maintainer", "string"),
+      AtlasTypeUtil.createOptionalAttrDef("repository", "string"))
+    val definition = AtlasTypeUtil.getTypesDef(procType)
+    val result = createType(definition)
+    println(s"Type $STREAMLET_TYPE is created with result - $result")
+  }
+
+  // Create Streamlet type
+  def createStreamletKafkaRelationship() = {
+
+    val streamletKafkaInputs = AtlasTypeUtil.createRelationshipTypeDef(
+      "streamplet_kafka_input_topic",
+      "Association between streamlets and Kafka input topics",
+      "1.0",
+      RelationshipCategory.AGGREGATION,
+      PropagateTags.TWO_TO_ONE,
+      AtlasTypeUtil.createRelationshipEndDef(
+        STREAMLET_TYPE,
+        "inputQueues",
+        Cardinality.SET,
+        true),
+      AtlasTypeUtil.createRelationshipEndDef(
+        "DataSet",
+        "inputQueuesForStreamlets",
+        Cardinality.SET,
+        false)
+    )
+    val streamletKafkaOutputs = AtlasTypeUtil.createRelationshipTypeDef(
+      "streamplet_kafka_output_topic",
+      "Association between streamlets and Kafka input topics",
+      "1.0",
+      RelationshipCategory.AGGREGATION,
+      PropagateTags.ONE_TO_TWO,
+      AtlasTypeUtil.createRelationshipEndDef(
+        STREAMLET_TYPE,
+        "outputQueues",
+        Cardinality.SET,
+        true),
+      AtlasTypeUtil.createRelationshipEndDef(
+        "DataSet",
+        "outputQueuesForStreamlets",
+        Cardinality.SET,
+        false)
+
+    )
+    var definition = AtlasTypeUtil.getTypesDef(streamletKafkaInputs)
+    var result = createType(definition)
+    println(s"Type Streamlet kafka relationships are created with result - $result")
+    definition = AtlasTypeUtil.getTypesDef(streamletKafkaOutputs)
+    result = createType(definition)
+    println(s"Type Streamlet kafka relationships are created with result - $result")
+  }
+}
+
+object AtlasSupport{
+  def apply(user : String = "admin", passw : String = "admin", url : String = "http://35.192.34.161"): AtlasSupport = new AtlasSupport(user, passw, url)
+}
