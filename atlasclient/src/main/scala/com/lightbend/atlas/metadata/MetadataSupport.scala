@@ -4,8 +4,8 @@ import org.apache.atlas.model.instance.AtlasClassification
 
 object MetadataSupport {
 
-  val AVRO_SCHEMA_TYPE = "avro_schema"
-  val STREAMLET_TYPE = "Streamlet"
+  val SCHEMA_TYPE = "data_schema"
+  val MODEL_TYPE = "Model"
   val KAFKA_TYPE = "kafka_topic"
 
   val QUALIFIED_NAME = "qualifiedName"

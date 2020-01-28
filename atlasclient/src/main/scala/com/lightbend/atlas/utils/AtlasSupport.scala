@@ -7,8 +7,6 @@ import org.apache.atlas.`type`.AtlasTypeUtil
 import org.apache.atlas.model.SearchFilter
 import org.apache.atlas.model.instance.AtlasEntity
 import org.apache.atlas.model.instance.EntityMutations.EntityOperation
-import org.apache.atlas.model.typedef.AtlasRelationshipDef._
-import org.apache.atlas.model.typedef.AtlasStructDef.AtlasAttributeDef.Cardinality
 import org.apache.atlas.model.typedef.AtlasTypesDef
 import org.apache.commons.collections.CollectionUtils
 
@@ -118,67 +116,6 @@ class AtlasSupport(user : String, passw : String, url : String) {
       case t: Throwable =>
         t.printStackTrace()
     }
-  }
-
-  // Create Streamlet type
-  def createStreamletType() = {
-
-    // name, description, createTime and owner are inherited from process
-    val procType = AtlasTypeUtil.createClassTypeDef(STREAMLET_TYPE, "Pipeline Streamlet Type", "1.0", ImmutableSet.of("Process"),
-      AtlasTypeUtil.createRequiredAttrDef("version", "string"),
-      AtlasTypeUtil.createOptionalAttrDef("inputQueues", "array<DataSet>"),
-      AtlasTypeUtil.createOptionalAttrDef("outputQueues", "array<DataSet>"),
-      AtlasTypeUtil.createOptionalAttrDef("maintainer", "string"),
-      AtlasTypeUtil.createOptionalAttrDef("repository", "string"))
-    val definition = AtlasTypeUtil.getTypesDef(procType)
-    val result = createType(definition)
-    println(s"Type $STREAMLET_TYPE is created with result - $result")
-  }
-
-  // Create Streamlet type
-  def createStreamletKafkaRelationship() = {
-
-    val streamletKafkaInputs = AtlasTypeUtil.createRelationshipTypeDef(
-      "streamplet_kafka_input_topic",
-      "Association between streamlets and Kafka input topics",
-      "1.0",
-      RelationshipCategory.AGGREGATION,
-      PropagateTags.TWO_TO_ONE,
-      AtlasTypeUtil.createRelationshipEndDef(
-        STREAMLET_TYPE,
-        "inputQueues",
-        Cardinality.SET,
-        true),
-      AtlasTypeUtil.createRelationshipEndDef(
-        "DataSet",
-        "inputQueuesForStreamlets",
-        Cardinality.SET,
-        false)
-    )
-    val streamletKafkaOutputs = AtlasTypeUtil.createRelationshipTypeDef(
-      "streamplet_kafka_output_topic",
-      "Association between streamlets and Kafka input topics",
-      "1.0",
-      RelationshipCategory.AGGREGATION,
-      PropagateTags.ONE_TO_TWO,
-      AtlasTypeUtil.createRelationshipEndDef(
-        STREAMLET_TYPE,
-        "outputQueues",
-        Cardinality.SET,
-        true),
-      AtlasTypeUtil.createRelationshipEndDef(
-        "DataSet",
-        "outputQueuesForStreamlets",
-        Cardinality.SET,
-        false)
-
-    )
-    var definition = AtlasTypeUtil.getTypesDef(streamletKafkaInputs)
-    var result = createType(definition)
-    println(s"Type Streamlet kafka relationships are created with result - $result")
-    definition = AtlasTypeUtil.getTypesDef(streamletKafkaOutputs)
-    result = createType(definition)
-    println(s"Type Streamlet kafka relationships are created with result - $result")
   }
 }
 
