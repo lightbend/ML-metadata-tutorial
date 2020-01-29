@@ -1,11 +1,13 @@
-get_ipython().system('pip install pandas --upgrade --user')
-get_ipython().system('pip install mlflow --upgrade --user')
-get_ipython().system('pip install joblib --upgrade --user')
-get_ipython().system('pip install numpy --upgrade --user ')
-get_ipython().system('pip install scipy --upgrade --user ')
-get_ipython().system('pip install scikit-learn --upgrade --user')
-get_ipython().system('pip install boto3 --upgrade --user')
+# Make sure that following are installed
 
+# pip3 install pandas --upgrade
+# pip3 install mlflow --upgrade
+# pip3 install joblib --upgrade
+# pip3 install numpy --upgrade
+# pip3 install scipy --upgrade
+# pip3 install scikit-learn --upgrade
+# THe next one is required only if S3 is used for storing artifacts
+# pip3 install boto3 --upgrade
 
 import time
 import json

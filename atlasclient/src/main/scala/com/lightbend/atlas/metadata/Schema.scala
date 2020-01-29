@@ -4,13 +4,13 @@ import com.google.common.collect.ImmutableSet
 import com.lightbend.atlas.metadata.MetadataSupport._
 import org.apache.atlas.`type`.AtlasTypeUtil
 import org.apache.atlas.model.instance.AtlasEntity
-import org.apache.atlas.model.typedef.AtlasTypesDef
+import org.apache.atlas.model.typedef._
 
 import scala.collection.JavaConverters._
 
 case class Schema(
     name : String,                                        // Schema name, has to be unique
-    encoding : String,                                    // Schema encoding, for example, proto, Avro, etc
+    encoding : String,                                    // Schema encoding, for example, proto, Avro, JSON, etc
     description : String,                                 // Description
     owner : String,                                       // Maintainer
     namespace : String,                                   // Schema namespace
@@ -19,8 +19,8 @@ case class Schema(
     schema : String,                                      // Content of schema as a string
     relatedSchemas : Seq[AtlasEntity],                    // Related schemas (for example schemas used in this one)
     classifications : Seq[String]                         // Classifications used for this schema{
-  ){
-  def createAtlasSchemaEntity() : AtlasEntity = {
+  ) {
+  def createAtlasSchemaEntity(): AtlasEntity = {
     val entity = new AtlasEntity(SCHEMA_TYPE)
     entity.setAttribute("name", name)
     entity.setAttribute(REFERENCEABLE_ATTRIBUTE_NAME, name)
@@ -28,33 +28,38 @@ case class Schema(
     entity.setAttribute("description", description)
     entity.setAttribute("owner", owner)
     entity.setAttribute("namespace", namespace)
-    entity.setAttribute("type", record)
-    entity.setAttribute("schema", schema)
-    entity.setAttribute("versionId", version)
-    entity.setAttribute("createTime", System.currentTimeMillis)
-    entity.setAttribute("relatedSchemas", relatedSchemas.asJava)
-    entity.setClassifications(toAtlasClassifications(classifications).asJava)
+    entity.setAttribute("dataType", record)
+    entity.setAttribute("schemaContent", schema)
+    entity.setAttribute("version", version)
+    entity.setAttribute("createTime", System.currentTimeMillis())
+    relatedSchemas.size match {
+      case len if len > 0 => entity.setAttribute("relatedSchemas", relatedSchemas.asJava)
+      case _ =>
+    }
+    classifications.size match {
+      case len if len > 0 => entity.setClassifications(toAtlasClassifications(classifications).asJava)
+      case _ =>
+    }
     entity
   }
+}
+
+object Schema{
 
   def createType() : AtlasTypesDef = {
 
-    // name, description, createTime and owner are inherited from process
-    val name = AtlasTypeUtil.createRequiredAttrDef("name", "string")
-    name.setIsUnique(true)
-    name.setIsIndexable(true)
-    val procType = AtlasTypeUtil.createClassTypeDef(SCHEMA_TYPE, "Data Schema Type", "1.0", ImmutableSet.of("Process"),
-      name,
-      AtlasTypeUtil.createRequiredAttrDef("encoding", "string"),
-      AtlasTypeUtil.createRequiredAttrDef("description", "string"),
-      AtlasTypeUtil.createRequiredAttrDef("owner", "string"),
-      AtlasTypeUtil.createRequiredAttrDef("namespace", "string"),
-      AtlasTypeUtil.createRequiredAttrDef("type", "string"),
-      AtlasTypeUtil.createRequiredAttrDef("versionId", "int"),
-      AtlasTypeUtil.createRequiredAttrDef("schema", "string"),
-      AtlasTypeUtil.createRequiredAttrDef("createTime", "Date"),
-      AtlasTypeUtil.createOptionalAttrDef("relatedSchemas", "array<DataSet>"))
+    // name and description are inherited from DataSet
 
-    AtlasTypeUtil.getTypesDef(procType)
+    val schemaType = AtlasTypeUtil.createClassTypeDef(SCHEMA_TYPE, "Data Schema Type", "1.0", ImmutableSet.of("DataSet"),
+      AtlasTypeUtil.createRequiredAttrDef("owner", "string"),
+      AtlasTypeUtil.createRequiredAttrDef("createTime", "long"),
+      AtlasTypeUtil.createRequiredAttrDef("encoding", "string"),
+      AtlasTypeUtil.createRequiredAttrDef("namespace", "string"),
+      AtlasTypeUtil.createRequiredAttrDef("dataType", "string"),
+      AtlasTypeUtil.createRequiredAttrDef("version", "int"),
+      AtlasTypeUtil.createRequiredAttrDef("schemaContent", "string"),
+      AtlasTypeUtil.createOptionalListAttrDef("relatedSchemas", AtlasBaseTypeDef.getArrayTypeName(SCHEMA_TYPE)))
+
+    AtlasTypeUtil.getTypesDef(schemaType)
   }
 }

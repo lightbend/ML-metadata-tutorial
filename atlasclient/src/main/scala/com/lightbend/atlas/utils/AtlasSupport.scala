@@ -77,6 +77,47 @@ class AtlasSupport(user : String, passw : String, url : String) {
     }
   }
 
+  def getTypeByName(name : String) : AtlasTypesDef = {
+    val searchParams = new MultivaluedMapImpl
+    searchParams.add(SearchFilter.PARAM_NAME, name)
+    val searchFilter = new SearchFilter(searchParams)
+    client.getAllTypeDefs(searchFilter)
+  }
+
+  def deleteRelationshipByName(name : String) : Unit = {
+    val types = getTypeByName(name)
+    types.getRelationshipDefs.size() match {
+      case l if (l > 0) =>
+        val definition = AtlasTypeUtil.getTypesDef(types.getRelationshipDefs.get(0))
+        try {
+          val result = client.deleteAtlasTypeDefs(definition)
+          println(s"Relationship $name is deleted with result - $result")
+        } catch {
+          case t: Throwable =>
+            t.printStackTrace()
+        }
+      case _ =>
+        println(s"Relationship $name does not exist")
+    }
+  }
+
+  def deleteTypeByName(name : String) : Unit = {
+    val types = getTypeByName(name)
+    types.getEntityDefs.size() match {
+      case l if (l > 0) =>
+        val definition = AtlasTypeUtil.getTypesDef(types.getEntityDefs.get(0))
+        try {
+          val result = client.deleteAtlasTypeDefs(definition)
+          println(s"Type $name is deleted with result - $result")
+        } catch {
+          case t: Throwable =>
+            t.printStackTrace()
+        }
+      case _ =>
+        println(s"Relationship $name does not exist")
+    }
+  }
+
   // Delete classification by name
   def deleteClassification(name : String) : Unit = {
     val classification = AtlasTypeUtil.createTraitTypeDef(name, "", ImmutableSet.of[String]())
@@ -90,7 +131,6 @@ class AtlasSupport(user : String, passw : String, url : String) {
     }
   }
 
-  //  def getEntitiesByClassification(classification: String) : Unit = {}
 
   def deleteEntity(entitytype : String, name : String) : Unit = {
     try{
@@ -120,5 +160,6 @@ class AtlasSupport(user : String, passw : String, url : String) {
 }
 
 object AtlasSupport{
+
   def apply(user : String = "admin", passw : String = "admin", url : String = "http://35.192.34.161"): AtlasSupport = new AtlasSupport(user, passw, url)
 }
