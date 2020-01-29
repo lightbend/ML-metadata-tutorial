@@ -95,7 +95,7 @@ object ModelCreator {
       |}
       |""".stripMargin,
     Seq.empty,
-    Seq()
+    Seq(MODEL_SERVING_CLASSIFICATION, RECOMMENDER_CLASSIFICATION)
   )
 
   val modelOutput = Schema(
@@ -152,7 +152,7 @@ object ModelCreator {
     null,                                                 // Input Schema
     null,                                                 // Output Schema
     Some("http://recommendermodelserver.kubeflow.svc.cluster.local:8501"),// Optional deployment URL
-    Seq(MODEL_SERVING_CLASSIFICATION, RECOMMENDER_CLASSIFICATION)
+    Seq.empty
   )
 
   def main(args: Array[String]): Unit = {
@@ -161,16 +161,9 @@ object ModelCreator {
 /*
     atlas.deleteEntity(SCHEMA_TYPE, "Model Input")
     atlas.deleteEntity(SCHEMA_TYPE, "Model Output")
+    atlas.deleteEntity(MODEL_TYPE, "Product recommender")
     atlas.resetConnection()
-
-    // Remove relationships
-    atlas.deleteRelationshipByName(MLModel.modelInput.getName)
-    atlas.deleteRelationshipByName(MLModel.modelOutput.getName)
-    // Wait for a min to make sure that creation completes in Atlas
-    atlas.resetConnection()
-
-    atlas.deleteTypeByName(SCHEMA_TYPE)
-    atlas.resetConnection() */
+*/
     // Create types
     atlas.createType(Schema.createType())
     // Wait for a min to make sure that creation completes in Atlas
@@ -190,12 +183,6 @@ object ModelCreator {
       "All artifacts for Recommender model",                  // Description
       "!.0"                                                   // Version
     ).createAtlasClassificationEntity())
-    // Wait for a min to make sure that creation completes in Atlas
-    atlas.resetConnection()
-
-    // Create relationships
-    atlas.createType(AtlasTypeUtil.getTypesDef(MLModel.modelInput))
-    atlas.createType(AtlasTypeUtil.getTypesDef(MLModel.modelOutput))
     // Wait for a min to make sure that creation completes in Atlas
     atlas.resetConnection()
 

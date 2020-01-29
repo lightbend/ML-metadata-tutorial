@@ -161,5 +161,5 @@ class AtlasSupport(user : String, passw : String, url : String) {
 
 object AtlasSupport{
 
-  def apply(user : String = "admin", passw : String = "admin", url : String = "http://35.192.34.161"): AtlasSupport = new AtlasSupport(user, passw, url)
+  def apply(user : String = "admin", passw : String = "admin", url : String = "http://localhost:21000"): AtlasSupport = new AtlasSupport(user, passw, url)
 }

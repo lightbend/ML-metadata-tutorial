@@ -34,8 +34,8 @@ case class MLModel(
       case _ =>
     }
     entity.setAttribute("version", version)
-    entity.setAttribute("inputschema", input)
-    entity.setAttribute("outputschema", output)
+    entity.setAttribute("inputs", Seq(input).asJava)
+    entity.setAttribute("outputs", Seq(output).asJava)
     deploymentURL match {
       case Some(url) => entity.setAttribute("deploymenturl", url)
       case _ =>
@@ -52,18 +52,18 @@ case class MLModel(
 object MLModel{
   def createType() : AtlasTypesDef = {
 
-    // name, description, createTime and owner are inherited from process
+    // name, description, createTime and owner are inherited from process. Additionally a Process type has two specific attributes,
+    // inputs and outputs. Both inputs and outputs are arrays of DataSet entities. Thus an instance of a Process type can use these
+    // inputs and outputs to capture how the lineage of a DataSet evolves.
     val procType = AtlasTypeUtil.createClassTypeDef(MODEL_TYPE, "Model Type", "1.0", ImmutableSet.of("Process"),
       AtlasTypeUtil.createRequiredAttrDef("creationURL", "string"),
       AtlasTypeUtil.createOptionalAttrDef("modeltype", "string"),
       AtlasTypeUtil.createRequiredAttrDef("version", "int"),
-      AtlasTypeUtil.createRequiredAttrDef("inputschema", "DataSet"),
-      AtlasTypeUtil.createRequiredAttrDef("outputschema", "DataSet"),
       AtlasTypeUtil.createOptionalAttrDef("deploymenturl", "string"))
 
     AtlasTypeUtil.getTypesDef(procType)
   }
-
+/*
   val modelInput = AtlasTypeUtil.createRelationshipTypeDef(
     "model_input_schema",
     "Association between model and input schema",
@@ -72,7 +72,7 @@ object MLModel{
     PropagateTags.ONE_TO_TWO,
     AtlasTypeUtil.createRelationshipEndDef(
       MODEL_TYPE,
-      "inputschema",
+      "inputs",
       Cardinality.SINGLE,
       true),
     AtlasTypeUtil.createRelationshipEndDef(
@@ -90,7 +90,7 @@ object MLModel{
     PropagateTags.ONE_TO_TWO,
     AtlasTypeUtil.createRelationshipEndDef(
       MODEL_TYPE,
-      "outputschema",
+      "outputs",
       Cardinality.SINGLE,
       true),
     AtlasTypeUtil.createRelationshipEndDef(
@@ -98,5 +98,5 @@ object MLModel{
       "outputschemaForModel",
       Cardinality.SET,
       false)
-  )
+  )*/
 }
