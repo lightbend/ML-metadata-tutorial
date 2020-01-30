@@ -10,17 +10,6 @@ import scala.collection.JavaConverters._
 //      https://github.com/apache/incubator-atlas/blob/master/webapp/src/main/java/org/apache/atlas/examples/QuickStartV2.java
 object ConnectivityTester {
 
-  val AVRO_COLLECTION = "avro_collection"
-  val AVRO_ENUM = "avro_enum"
-  val AVRO_FIELD = "avro_field"
-  val AVRO_FIXED = "avro_fixed"
-  val AVRO_PRIMITIVE = "avro_primitive"
-  val AVRO_RECORD ="avro_record"
-  val AVRO_SCHEMA = "avro_schema"
-  val AVRO_TYPE = "avro_type"
-  val KAFKA_TOPIC = "kafka_topic"
-
-//  private val TYPES = Array(AVRO_COLLECTION, AVRO_ENUM, AVRO_FIELD, AVRO_FIXED, AVRO_PRIMITIVE, AVRO_RECORD, AVRO_SCHEMA, AVRO_TYPE, KAFKA_TOPIC)
   private val TYPES = Array("Referenceable", "Asset", "Infrastructure", "DataSet", "Process")
 
   def main(args: Array[String]): Unit = {
