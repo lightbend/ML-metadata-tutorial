@@ -20,7 +20,8 @@ object ConnectivityTester {
   val AVRO_TYPE = "avro_type"
   val KAFKA_TOPIC = "kafka_topic"
 
-  private val TYPES = Array(AVRO_COLLECTION, AVRO_ENUM, AVRO_FIELD, AVRO_FIXED, AVRO_PRIMITIVE, AVRO_RECORD, AVRO_SCHEMA, AVRO_TYPE, KAFKA_TOPIC)
+//  private val TYPES = Array(AVRO_COLLECTION, AVRO_ENUM, AVRO_FIELD, AVRO_FIXED, AVRO_PRIMITIVE, AVRO_RECORD, AVRO_SCHEMA, AVRO_TYPE, KAFKA_TOPIC)
+  private val TYPES = Array("Referenceable", "Asset", "Infrastructure", "DataSet", "Process")
 
   def main(args: Array[String]): Unit = {
 
