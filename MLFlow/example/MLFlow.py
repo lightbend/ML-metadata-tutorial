@@ -6,8 +6,6 @@
 # pip3 install numpy --upgrade
 # pip3 install scipy --upgrade
 # pip3 install scikit-learn --upgrade
-# THe next one is required only if S3 is used for storing artifacts
-# pip3 install boto3 --upgrade
 
 import time
 import json
@@ -29,11 +27,6 @@ from  mlflow.tracking import MlflowClient
 from warnings import simplefilter
 simplefilter(action='ignore', category = FutureWarning)
 simplefilter(action='ignore', category = ConvergenceWarning)
-
-# Ensure Minio access
-os.environ['MLFLOW_S3_ENDPOINT_URL'] = 'http://minio-service.kubeflow.svc.cluster.local:9000'
-os.environ['AWS_ACCESS_KEY_ID'] = 'minio'
-os.environ['AWS_SECRET_ACCESS_KEY'] = 'minio123'
 
 # Collect the data
 df_nationalconsumption_electricity_daily = pd.read_csv("https://raw.githubusercontent.com/jeanmidevacc/mlflow-energyforecast/master/data/rtu_data.csv")
@@ -70,9 +63,6 @@ possible_inputs = {
 array_output_train = np.array(df_trainvalidate_energyconsumption[output])
 array_output_test = np.array(df_test_energyconsumption[output])
 
-# connect to remote server
-remote_server_uri = "http://mlflowserver.kubeflow.svc.cluster.local:5000"
-mlflow.set_tracking_uri(remote_server_uri)
 # Launch the experiment on mlflow
 experiment_name = "electricityconsumption-forecast"
 mlflow.set_experiment(experiment_name)
