@@ -62,12 +62,13 @@ http://localhost:5000
 
 ### Setup
 For Atlas you can either use local setup, leveraging [bash file](Atlas/localinstall/install.sh)
-or use a prebuild docker image 
-````
-lightbend/atlas:0.0.1
-````
-The image is build using the following [docker file](Atlas/docker/Dockerfile). In case you want to install
+or use a prebuild docker image `lightbend/atlas:0.0.1` The image is build using the following [docker file](Atlas/docker/Dockerfile). In case you want to install
 it to the kubernetes cluster, you can use the following [Helm chart](Atlas/chart).
+Run the image using the following command
+````
+docker run -p 21000:21000 --rm -it lightbend/atlas:0.0.1
+````
+**NOTES:** Be patient, it takes a while for an image to get ready
 
 ### Building and Running example
 An example code is located [here](/atlasclient). You can build it either directly
@@ -87,4 +88,4 @@ Point your browser to
 ````
 http://localhost:21000
 ````
-and look at the Atlas UI 
+and look at the Atlas UI (credentials `admin/admin`)
