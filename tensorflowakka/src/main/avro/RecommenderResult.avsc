@@ -1,0 +1,19 @@
+{
+  "namespace": "pipelines.examples.modelserving.recommender.avro",
+    "type": "record",
+    "name": "RecommenderResult",
+    "fields":[
+      {
+        "name": "inputRecord",
+        "type": "RecommenderRecord"
+      },
+      {
+        "name": "modelResult",
+        "type": "RecommenderServingOutput"
+      },
+      {
+        "name": "modelResultMetadata",
+        "type": "ModelResultMetadata"
+      }
+  ]
+}

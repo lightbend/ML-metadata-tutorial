@@ -1,0 +1,20 @@
+{
+  "namespace": "pipelines.examples.modelserving.recommender.avro",
+  "type": "record",
+  "name": "RecommenderRecord",
+  "fields":[
+    {
+        "name": "user",
+        "type": "long"
+    },
+    {
+      "name": "products",
+      "type": {"type": "array", "items": "long"}
+    },
+    {
+      "name": "datatype",
+      "type": "string",
+      "default": "recommender"
+     }
+  ]
+}
