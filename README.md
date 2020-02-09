@@ -2,7 +2,7 @@
 
 > **NOTES:**
 >
-> This code has been tested only with Java 8, Scala 2.12.8 and Python 3.7 (the default setting). Any other versions of Java will not work. Other versions of Scala 2.11 and 2.12 may work.
+> This code has been tested only with Java 8, Scala 2.12.10 and Python 3.7 (the default setting). Any other versions of Java will not work. Other versions of Scala 2.11 and 2.12 may work.
 
 [Boris Lublinsky](mailto:boris.lublinsky@lightbend.com) and [Dean Wampler](mailto:dean.wampler@lightbend.com), [Lightbend](https://lightbend.com/lightbend-platform)
 
@@ -13,9 +13,23 @@
 
 See the companion presentation for the tutorial in the `presentation` folder
 
-THe tutorial contains 2 exersises:
+The tutorial contains 3 exersises:
+* Serving Model as Data (tensorflow graph) leveraging [cloudflow](https://cloudflow.io/)
 * Usage of the [MLflow](https://mlflow.org/) for capturing and viewing of model training metadata
 * Creating a Model registry leveraging [Atlas](https://atlas.apache.org/#/)
+
+## Model serving
+
+We recommend reading cloudflow documentation and main concepts [here](https://cloudflow.io/)
+For this exercise we will not install serving to the cluster, but run it local, using the following command
+````
+ sbt runLocal
+````
+this will print out the location of the log file. Run
+````
+tail -f <log location>
+````
+to see execution results
 
 ## MLflow
 
