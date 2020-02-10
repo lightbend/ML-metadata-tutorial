@@ -13,7 +13,7 @@
 
 See the companion presentation for the tutorial in the `presentation` folder
 
-The tutorial contains 3 exersises:
+The tutorial contains 3 exercises:
 * Serving Model as Data (tensorflow graph) leveraging [cloudflow](https://cloudflow.io/)
 * Usage of the [MLflow](https://mlflow.org/) for capturing and viewing of model training metadata
 * Creating a Model registry leveraging [Atlas](https://atlas.apache.org/#/)
