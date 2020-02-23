@@ -38,13 +38,46 @@ Once Python 3 and `pip` (or `pip3`) are installed, run the following command to 
 pip install -r MLflow/requirements.txt --upgrade
 ```
 
-## Model Serving
+## Overview of the Examples
+
+We'll work with three examples:
+
+1. Model Serving with Cloudflow
+2. Model Training with MLflow
+3. Data/Model Governance with Apache Atlas
+
+The first and third examples use the `sbt` build to compile and run the examples. Here's a "crash course" on `sbt`, using an interactive session, where `$` is the shell prompt (`bash`, Windows CMD, or whatever) and `sbt:ML Learning tutorial>` is the interactive prompt for `sbt`:
+
+```
+$ sbt
+... stuff is output
+sbt:ML Learning tutorial> projects
+...
+[info] 	   atlasclient
+[info] 	 * ml-metadata-tutorial-deanw-git
+[info] 	   tensorflowAkka
+sbt:ML Learning tutorial> projects
+```
+
+We are currently using the top-level project for the tutorial. The `atlasclient` is a program for interacting with an Apache Atlas server and `tensorflowAkka` uses [Cloudflow's Akka API](https://cloudflow.io) to demonstrate serving models in a microservice-like context, as we'll explain.
+
+To work with one of the project, for example `tensorflowAkka` (the first one we'll try), use the `project` command, as follows. Note that the prompt will change:
+
+```
+sbt:ML Learning tutorial> project tensorflowAkka
+sbt:tensorflow-akka>
+```
+
+## Model Serving with Cloudflow
 
 This example uses the Akka Streams API in [Cloudflow](https://cloudflow.io/). We won't explain a lot of details about how Cloudflow works, see the [Cloudflow documentation(https://cloudflow.io/docs/current/index.html)] for an introduction and detailed explanations.
 
-Clouflow applications are designed to be tested locally and executed in a cluster for production. For this exercise, we will not install the serving example to a cluster, but run it locally, using the following `sbt` command:
+Clouflow applications are designed to be tested locally and executed in a cluster for production. For this exercise, we will not install the serving example to a cluster, but run it locally, using `sbt`.
+
+Start the `sbt` interpreter and use the following `sbt` commands:
 ````
- sbt runLocal
+sbt:ML Learning tutorial> project tensorflowAkka
+sbt:tensorflow-akka> runLocal
 ````
 
 This will print out the location of the log file. (Look for the `... --- Output --- ...` line.) On MacOS or Linux systems, use the following command to see the entries as they are written:
@@ -52,14 +85,17 @@ This will print out the location of the log file. (Look for the `... --- Output 
 tail -f <log_location>
 ````
 
-> **Pro Tip:** In some MacOS and Linux shells, you can "command-click", "control-click", or right click on the file path in the text output to open it in a console window for easy browsing.
-
 On Windows, use the command `more < <log_location>`, but it stops as soon as it has read the current last line, so you'll need to repeat the command several times as new output is written to the file.
+
+> **Pro Tips:**
+>
+> 1. In some MacOS and Linux shells, you can "command-click", "control-click", or right click on the file path in the text output to open it in a console window for easy browsing.
+> 2. Actually, in this case, you don't need to switch to the `tensorflowAkka` project before using `runLocal`, but we showed it this way to be clear which nested project we're actually using.
 
 Terminate the example by pressing the Enter key in the `sbt` window.
 
 
-## MLflow
+## Model Training with MLflow
 
 We'll train some models using [scikit-learn](https://scikit-learn.org/stable/) and track those training runs in MLflow. We'll use the MLflow GUI to examine the data.
 
@@ -109,7 +145,7 @@ View results at
 http://localhost:5000
 ````
 
-## Apache Atlas
+## Data/Model Governance with Apache Atlas
 
 ### Setup
 For Atlas you can either install Apache Atlas locally or use a prebuilt Docker image `lightbend/atlas:0.0.1`, which is easier, if you have Docker installed.
