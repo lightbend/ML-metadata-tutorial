@@ -1,11 +1,5 @@
-# Make sure that following are installed
-
-# pip3 install pandas --upgrade
-# pip3 install mlflow --upgrade
-# pip3 install joblib --upgrade
-# pip3 install numpy --upgrade
-# pip3 install scipy --upgrade
-# pip3 install scikit-learn --upgrade
+# Make sure the dependencies are installed using the command
+# pip/pip3 install -r ./requirements.txt --upgrade
 
 import time
 import json
@@ -50,7 +44,7 @@ allinputs.remove(output)
 print("Output to predict : ", output)
 print("Inputs for the prediction : ", allinputs)
 
-# Build different set of featurws for the model
+# Build different sets of features for the model
 possible_inputs = {
     "all" : allinputs,
     "only_allday_inputs" : ["weekday", "month", "is_holiday", "week"],
@@ -79,7 +73,7 @@ def evaluation_model(y_test, y_pred):
         "r2" : r2,
         "mae" : mae,
     }
-    
+
     return metrics
 
 # KNN regressor
@@ -87,12 +81,12 @@ from sklearn.neighbors import KNeighborsRegressor
 
 def train_knnmodel(parameters, inputs, tags, log = False):
     with mlflow.start_run(nested = True):
-        
+
         # Prepare the data
         array_inputs_train = np.array(df_trainvalidate_energyconsumption[inputs])
         array_inputs_test = np.array(df_test_energyconsumption[inputs])
-        
-        
+
+
         # Build the model
         tic = time.time()
         model = KNeighborsRegressor(parameters["nbr_neighbors"], weights = parameters["weight_method"])
@@ -123,9 +117,9 @@ def train_knnmodel(parameters, inputs, tags, log = False):
 
         # log in mlflow (model)
         mlflow.sklearn.log_model(model, f"model")
-                
+
         # Tag the model
-        mlflow.set_tags(tags)        
+        mlflow.set_tags(tags)
 
 # Test the different combinations of KNN parameters
 configurations = []
@@ -141,7 +135,7 @@ for nbr_neighbors in [1,2,5,10]:
                 "model" : "knn",
                 "inputs" : field
             }
-            
+
             configurations.append([parameters, tags])
 
             train_knnmodel(parameters, possible_inputs[field], tags)
@@ -151,11 +145,11 @@ from sklearn.neural_network import MLPRegressor
 
 def train_mlpmodel(parameters, inputs, tags, log = False):
     with mlflow.start_run(nested = True):
-        
+
         # Prepare the data
         array_inputs_train = np.array(df_trainvalidate_energyconsumption[inputs])
         array_inputs_test = np.array(df_test_energyconsumption[inputs])
-        
+
         # Build the model
         tic = time.time()
 
@@ -165,7 +159,7 @@ def train_mlpmodel(parameters, inputs, tags, log = False):
             solver = parameters["solver"],
             max_iter = parameters["nbr_iteration"],
             random_state = 0)
-        
+
         model.fit(array_inputs_train, array_output_train)
         duration_training = time.time() - tic
 
@@ -182,7 +176,7 @@ def train_mlpmodel(parameters, inputs, tags, log = False):
             print(f"Random forest regressor:")
             print(parameters)
             print(metrics)
-    
+
         # Log in mlflow (parameter)
         mlflow.log_params(parameters)
 
@@ -193,7 +187,7 @@ def train_mlpmodel(parameters, inputs, tags, log = False):
 
         # log in mlflow (model)
         mlflow.sklearn.log_model(model, f"model")
-        
+
         # Tag the model
         mlflow.set_tags(tags)
 
@@ -223,13 +217,13 @@ class PTG:
         self.thresholds_x0 = thresholds_x0
         self.thresholds_a = thresholds_a
         self.thresholds_b = thresholds_b
-        
+
     def get_ptgmodel(self, x, a, b, x0):
         return np.piecewise(x, [x < x0, x >= x0], [lambda x: a*x + b , lambda x : a*x0 + b])
-        
+
     def fit(self, dfx, y):
         x = np.array(dfx)
-        
+
         # Define the bounds
         bounds_min = [thresholds_a[0], thresholds_b[0], thresholds_x0[0]]
         bounds_max = [thresholds_a[1], thresholds_b[1], thresholds_x0[1]]
@@ -242,9 +236,9 @@ class PTG:
         a = popt[0]
         b = popt[1]
         x0 = popt[2]
-        
+
         self.coefficients = [a, b, x0]
-        
+
     def predict(self,dfx):
         x = np.array(dfx)
         predictions = []
@@ -255,17 +249,17 @@ class PTG:
 
 def train_ptgmodel(parameters, inputs, tags, log = False):
     with mlflow.start_run(nested = True):
-        
+
         # Prepare the data
         df_inputs_train = df_trainvalidate_energyconsumption[inputs[0]]
         df_inputs_test = df_test_energyconsumption[inputs[0]]
-        
-        
+
+
         # Build the model
         tic = time.time()
-        
+
         model = PTG(parameters["thresholds_x0"], parameters["thresholds_a"], parameters["thresholds_b"])
-        
+
         model.fit(df_inputs_train, array_output_train)
         duration_training = time.time() - tic
 
@@ -282,7 +276,7 @@ def train_ptgmodel(parameters, inputs, tags, log = False):
             print(f"PTG:")
             print(parameters)
             print(metrics)
-    
+
         # Log in mlflow (parameter)
         mlflow.log_params(parameters)
 
@@ -293,7 +287,7 @@ def train_ptgmodel(parameters, inputs, tags, log = False):
 
         # log in mlflow (model)
         mlflow.sklearn.log_model(model, f"model")
-        
+
         # Tag the model
         mlflow.set_tags(tags)
 
@@ -309,12 +303,12 @@ parameters = {
 }
 
 for field in ["only_meanweather_inputs_avg", "only_meanweather_inputs_wavg"]:
-    
+
     tags = {
         "model" : "ptg",
         "inputs" : field
     }
-    
+
     train_ptgmodel(parameters, possible_inputs[field], tags, log = False)
 
 # Select the run of the experiment

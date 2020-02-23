@@ -32,3 +32,6 @@ airline-flights-ml/persistence/
 tmp/
 
 
+MLFlow/example/.ipynb
+MLFlow/example/.ipynb_checkpoints/
+MLFlow/example/mlruns
