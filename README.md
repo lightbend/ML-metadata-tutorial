@@ -2,12 +2,12 @@
 
 > **NOTES:**
 >
-> This code has been tested only with Java 8, Scala 2.12.10 and Python 3.7 (the default setting). Any other versions of Java will not work. Other versions of Scala 2.11 and 2.12 may work.
+> This code has been tested only with Java 8 and 11, Scala 2.12.10 and Python 3.7 (the default setting). Any other versions of Java will not work. Other versions of Scala 2.11 and 2.12 may work.
 
-* [Boris Lublinsky - Lightbend](mailto:boris.lublinsky@lightbend.com) and [Dean Wampler - Anyscale](mailto:dean@anyscale.io)
-* [Lightbend Platform](https://lightbend.com/lightbend-platform)
-* [Anyscale](https://anyscale.io) and [Ray](https://ray.io)
-* [Strata Data Conference San Jose, Tuesday, March 16, 2020](https://conferences.oreilly.com/strata-data-ai/stai-ca/schedule/2020-03-16)
+* [Boris Lublinsky - Lightbend](mailto:boris.lublinsky@lightbend.com): See [Lightbend Platform](https://lightbend.com/lightbend-platform)
+* [Dean Wampler - Anyscale](mailto:dean@anyscale.io): See [Anyscale](https://anyscale.io) and [Ray](https://ray.io)
+
+[Strata Data Conference San Jose, Tuesday, March 16, 2020](https://conferences.oreilly.com/strata-data-ai/stai-ca/schedule/2020-03-16)
 
 ©Copyright 2020, Lightbend, Inc. Apache 2.0 License. Please use as you see fit, at your own risk, but attribution is requested.
 
