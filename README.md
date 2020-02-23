@@ -35,7 +35,7 @@ While it can be a little more work to set up, we recommend using [Anaconda](http
 Once Python 3 and `pip` (or `pip3`) are installed, run the following command to install MLflow and dependencies:
 
 ```
-pip install -r MLFlow/requirements.txt --upgrade
+pip install -r MLflow/requirements.txt --upgrade
 ```
 
 ## Model Serving
@@ -61,17 +61,19 @@ Terminate the example by pressing the Enter key in the `sbt` window.
 
 ## MLflow
 
+We'll train some models using [scikit-learn](https://scikit-learn.org/stable/) and track those training runs in MLflow. We'll use the MLflow GUI to examine the data.
+
 ### Setup
 
 Follow the instructions above to install MLflow and other dependencies for this example using `pip`. For reference, the [MLflow quick start](https://www.mlflow.org/docs/latest/quickstart.html) provides additional information.
 
-Additionally, this tutorial project contains a [Dockerfile](/MLFlow/docker/Dockerfile) and supporting scripts to build an MLflow docker image. There is a [Helm chart](/MLFlow/chart) for installing the image in a Kubernetes cluster, leveraging Minio for storing tracking results.
+Additionally, this tutorial project contains a [Dockerfile](/MLflow/docker/Dockerfile) and supporting scripts to build an MLflow docker image. There is a [Helm chart](/MLflow/chart) for installing the image in a Kubernetes cluster, leveraging Minio for storing tracking results.
 
 For this tutorial, we will use local installation.
 
 ### Running the Example
 
-We provide both [notebook](/MLFlow/example/MLFlow.ipynb) and [Python](/MLFlow/example/MLFlow.py) versions of the code implementing training and storing execution metadata.
+We provide both [notebook](/MLflow/example/MLflow.ipynb) and [Python](/MLflow/example/MLflow.py) versions of the code implementing training and storing execution metadata.
 
 To run the notebook version, install Jupyter using `pip` (or `pip3`):
 
@@ -79,18 +81,18 @@ To run the notebook version, install Jupyter using `pip` (or `pip3`):
 pip install jupyter
 ```
 
-Then change to the `MLFlow` directory and run:
+Then change to the `MLflow` directory and run:
 
 ```
 jupyter notebook
 ```
 
-Click on the `MLFlow.ipynb` link to open the notebook.
+Click on the `MLflow.ipynb` link to open the notebook.
 
-The same code is in the Python script, `MLFlow.py` in the `MLFlow/example` directory. You can run it with the command:
+The same code is in the Python script, `MLflow.py` in the `MLflow/example` directory. You can run it with the command:
 
 ```
-python MLFlow.py
+python MLflow.py
 ```
 
 > **Note:** If you get an exception about a "key error" for `metrics.rmse` on line `df_runs.sort_values(["metrics.rmse"], ascending = True, inplace = True)

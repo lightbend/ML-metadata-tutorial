@@ -1,7 +1,7 @@
 apiVersion: v1
 appVersion: 0.1
-description: MLFlow
+description: MLflow
 maintainers:
 - name: Boris Lublinsky
-name: MLFLOW tracking server
+name: MLflow tracking server
 version: 0.1
