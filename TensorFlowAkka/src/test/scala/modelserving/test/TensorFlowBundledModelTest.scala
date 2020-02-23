@@ -4,7 +4,7 @@ import org.scalatest.FlatSpec
 import modelserving.model._
 import pipelines.examples.modelserving.recommender.avro._
 
-class TensorFowBundledModelTest extends FlatSpec {
+class TensorFlowBundledModelTest extends FlatSpec {
 
   val modelName = "Recommendor model"
   val modelPath = getClass.getResource("/model/").getPath

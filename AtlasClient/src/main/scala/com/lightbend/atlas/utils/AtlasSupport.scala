@@ -16,6 +16,8 @@ import scala.collection.JavaConverters._
 
 class AtlasSupport(user : String, passw : String, url : String) {
 
+  println(s"AtlasSupport: Connecting to URL $url with user $user...")
+
   var client = new AtlasClientV2(Array(url), Array(user, passw))
 
   // Reset client

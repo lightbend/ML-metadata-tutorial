@@ -35,3 +35,6 @@ tmp/
 MLflow/example/.ipynb
 MLflow/example/.ipynb_checkpoints/
 MLflow/example/mlruns
+
+Atlas/localinstall/apache-atlas-2.0.0-sources.tar.gz
+Atlas/localinstall/apache-atlas-sources-2.0.0/
