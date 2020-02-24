@@ -10,10 +10,10 @@ scalaVersion in ThisBuild := "2.12.10"
 scalacOptions in ThisBuild := Seq("-Xexperimental", "-unchecked", "-deprecation", "-feature")
 javaOptions in ThisBuild := Seq("Xlint:unchecked")
 
-lazy val atlasclient = (project in file("./atlasclient"))
+lazy val atlasclient = (project in file("./AtlasClient"))
   .settings(libraryDependencies ++= atlasDependencies)
 
-lazy val tensorflowAkka =  (project in file("./tensorflowakka"))
+lazy val tensorflowakka =  (project in file("./TensorFlowAkka"))
   .enablePlugins(CloudflowAkkaStreamsApplicationPlugin)
   .settings(
     libraryDependencies ++= Seq(tensorFlow, tensorFlowProto, logback, scalaTest),

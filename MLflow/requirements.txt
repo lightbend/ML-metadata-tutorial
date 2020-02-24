@@ -1,0 +1,6 @@
+pandas
+mlflow
+joblib
+numpy
+scipy
+scikit-learn
