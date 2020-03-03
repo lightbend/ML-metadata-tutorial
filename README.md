@@ -1,4 +1,12 @@
-# ML Metadata
+# ML Metadata for Model Governance
+
+
+* [Boris Lublinsky - Lightbend](mailto:boris.lublinsky@lightbend.com): See [Lightbend Platform](https://lightbend.com/lightbend-platform)
+* [Dean Wampler - Anyscale](mailto:dean@anyscale.io): See [Anyscale](https://anyscale.io) and [Ray](https://ray.io)
+
+[Strata Data Conference San Jose, Tuesday, March 16, 2020](https://conferences.oreilly.com/strata-data-ai/stai-ca/schedule/2020-03-16)
+
+©Copyright 2020, Lightbend, Inc. Apache 2.0 License. Please use as you see fit, at your own risk, but attribution is requested.
 
 > **NOTE:** This code has been built and tested only with the following tools:
 >
@@ -7,14 +15,7 @@
 > 3. Python 3.7 (although newer versions may work)
 > 4. Docker (recommended for the Apache Atlas example)
 
-Any other versions of Java will not work. Other versions of Scala 2.11 and 2.12 may work. To build Atlas as described below, you will _also_ need Python 2 available to run the Atlas administration scripts, which are not compatible with Python 3. However, we provide a Docker image to recommend its use instead).
-
-* [Boris Lublinsky - Lightbend](mailto:boris.lublinsky@lightbend.com): See [Lightbend Platform](https://lightbend.com/lightbend-platform)
-* [Dean Wampler - Anyscale](mailto:dean@anyscale.io): See [Anyscale](https://anyscale.io) and [Ray](https://ray.io)
-
-[Strata Data Conference San Jose, Tuesday, March 16, 2020](https://conferences.oreilly.com/strata-data-ai/stai-ca/schedule/2020-03-16)
-
-©Copyright 2020, Lightbend, Inc. Apache 2.0 License. Please use as you see fit, at your own risk, but attribution is requested.
+Any other versions of Java will not work. Other versions of Scala 2.11 and 2.12 may work, but not scala 2.13 at this time. To build Atlas as described below, you will _also_ need Python 2 available to run the Atlas administration scripts, which are somewhat old and do not work with Python 3. However, we provide a Docker image to use and recommend it instead.
 
 See the companion presentation for the tutorial in the `presentation` folder
 
@@ -48,7 +49,7 @@ pip install -r MLflow/requirements.txt --upgrade
 This tutorial is an `sbt` project that's used for two of the three examples:
 
 1. Model serving with cloudflow
-3. A model registry with Apache Atlas
+2. A model registry with Apache Atlas
 
 Both use the `sbt` build to compile and run the supplied application code. So, here is a "crash course" on interactive sessions with `sbt`. Here `$` is the shell prompt for `bash`, Windows CMD, or whatever (don't type it) and `sbt:ML Learning tutorial>` is the interactive prompt for `sbt`:
 
