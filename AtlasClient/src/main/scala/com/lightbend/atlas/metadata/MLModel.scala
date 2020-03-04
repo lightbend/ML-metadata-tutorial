@@ -20,7 +20,7 @@ case class MLModel(
     var input : AtlasEntity,                              // Input Schema
     var output : AtlasEntity,                             // Output Schema
     deploymentURL : Option[String],                       // Optional deployment URL
-    classifications : Seq[String]                         // Classifications used for this schema{
+    classifications : Seq[String]                         // Classifications used for this schema
   ) {
   def createAtlasSchemaEntity(): AtlasEntity = {
     val entity = new AtlasEntity(MODEL_TYPE)
