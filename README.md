@@ -79,22 +79,22 @@ When we tell you to use some variation of a `run` command, it will automatically
 
 ## Model Serving with Cloudflow
 
-This example uses the Akka Streams API in [Cloudflow](https://cloudflow.io/). We won't explain a lot of details about how Cloudflow works, see the [Cloudflow documentation(https://cloudflow.io/docs/current/index.html)] for an introduction and detailed explanations.
+This example uses the Akka Streams API in [Cloudflow](https://cloudflow.io/). We won't explain a lot of details about how Cloudflow works, see the [Cloudflow documentation](https://cloudflow.io/docs/current/index.html) for an introduction and detailed explanations of concepts.
 
 Clouflow applications are designed to be tested locally and executed in a cluster for production. For this exercise, we will not install the serving example to a cluster, but run it locally, using `sbt`.
 
 Start the `sbt` interpreter and use the following `sbt` commands from the project root directory:
 
-````
+```
 sbt:ML Learning tutorial> project tensorflowakka
 sbt:tensorflow-akka> runLocal
-````
+```
 
 This will print out the location of the log file. (Look for the `... --- Output --- ...` line.) On MacOS or Linux systems, use the following command to see the entries as they are written:
 
-````
+```
 tail -f <log_location>
-````
+```
 
 On Windows, use the command `more < <log_location>`, but it stops as soon as it has read the current last line, so you'll need to repeat the command several times as new output is written to the file.
 
@@ -149,15 +149,15 @@ python MLflow.py
 
 By default, wherever you run your program, the tracking API writes data into files in a local ./mlruns directory. You can then run MLflow’s Tracking UI to view them:
 
-````
+```
 mlflow ui
-````
+```
 
 View results at
 
-````
+```
 http://localhost:5000
-````
+```
 
 ## A Model Registry with Apache Atlas
 
@@ -174,7 +174,7 @@ The following tools are required for this script to work:
 * Java 8 (`JAVA_HOME` must be defined) - Newer versions of Java will not work, because of annotations that were removed from the JDK, which Atlas uses.
 * Maven - the `mvn` command.
 * `wget` or `curl` - However, if both are missing, the script tells you what to do as a workaround.
-* Python 2 - While you need Python 3 for the rest of the tutorial, the admin scripts for Atlas are old and require Python 2. See _troubleshooting_ below for more details.
+* Python 2 - While you need Python 3 for the rest of the tutorial, the admin scripts for Atlas are old and require Python 2. If you are using Anaconda for your Python installation, you can create a separate Python 2-based "environment" just for running Atlas. See _troubleshooting_ below for more details.
 
 It's best to change to the `localinstall` directory and then run `./install.sh`.
 
@@ -198,11 +198,18 @@ cd distro/target/apache-atlas-2.0.0-server/apache-atlas-2.0.0/
 
 As you can see, it's not easy to reliably build and run Atlas. Hence, we strongly recommend using the Docker image for the tutorial. For reference, the Docker image was built using [this Dockerfile](Atlas/docker/Dockerfile). In case you want to install it to a Kubernetes cluster, you can use [this Helm chart](Atlas/chart).
 
-To run the Docker image, use the following command in a separate command window:
+To run the Docker image, cd to the `Alas` directory and run one of the following scripts, `run-docker.sh` or `run-docker.bat`. In both cases, they run the following command:
 
-````
-docker run -p 21000:21000 --rm -it lightbend/atlas:0.0.1
-````
+```
+docker run --rm -it \
+    -v ./atlas-logs:/opt/apache-atlas-2.0.0/logs \
+    -v ./atlas-conf:/opt/apache-atlas-2.0.0/conf \
+    -p 21000:21000 \
+    --name atlas \
+    lightbend/atlas:0.0.1
+```
+
+This command will run the container using the `lightbend/atlas:0.0.1` Docker image. It will automatically remove the container when it exits (`--rm`), run it in interactive, TTY mode (`-i -t`), so you can see what's written to the internal console, mount both the `logs` and `conf` directories to local directories so you can view them easily, tunnel port `21000`, and name the container `atlas`.
 
 > **NOTE:** Be patient, as it takes a while for the container to finish start up. You'll see dots printed while it's initializing. It's ready when you see _Apache Atlas Server started!!!_
 
@@ -210,10 +217,10 @@ docker run -p 21000:21000 --rm -it lightbend/atlas:0.0.1
 
 An example of using Atlas is located in [./AtlasClient](AtlasClient). You can build it either by loading this directory as a Scala project in your IDE or using this SBT commands from the project root directory:
 
-````
+```
 sbt:ML Learning tutorial> project atlasclient
 sbt clean compile
-````
+```
 
 Once the project is built, there are two applications you can run:
 * [`ConnectivityTester`](AtlasClient/src/main/scala/com/lightbend/atlas/utils/ConnectivityTester.scala), to check if you can connect to the cluster correctly and get a sense of how definitions look in Atlas.
@@ -245,8 +252,8 @@ sbt:atlasclient> runMain com.lightbend.atlas.utils.ConnectivityTester
 ### Viewing results
 
 Point your browser to the following URL to see the Atlas UI:
-````
+```
 http://localhost:21000
-````
+```
 
 Use the credentials `admin/admin`.
