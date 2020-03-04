@@ -2,8 +2,10 @@
 
 error() {
 	echo "ERROR: $@"
-	while read line; do echo "ERROR: $line"; done
 	exit 1
+}
+error_msg() {
+	while read line; do echo "ERROR: $line"; done
 }
 
 [[ -n $JAVA_HOME ]] || error "JAVA_HOME is not defined, which means Java may not be installed."
@@ -26,11 +28,12 @@ then
 		which curl > /dev/null
 		if [[ $? -ne 0 ]]
 		then
-			error "Need wget or curl" <<EOF
+			error_msg <<EOF
 Neither wget nor curl commands were found. Download Atlas from
   $url
 to this directory, then run this script again.
 EOF
+			error
 		fi
 	fi
 	$download ${targz} $url
