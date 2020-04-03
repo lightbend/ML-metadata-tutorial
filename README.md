@@ -106,7 +106,7 @@ Terminate the example by pressing the Enter key in the `sbt` window.
 > 2. Actually, you don't need to switch to `project tensorflowakka` before invoking `runLocal`. You could just invoke `runLocal` in the top-level `ml-metadata-tutorial` project. However, we switched to `tensorflowakka` first so it's clear which one we're actually using.
 
 
-## Model Training with MLflow
+## Model Training Tracking with MLflow
 
 We'll train some models using [scikit-learn](https://scikit-learn.org/stable/) and track those training runs in MLflow. We'll use the MLflow GUI to examine the data.
 
