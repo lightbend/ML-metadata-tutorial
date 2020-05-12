@@ -1,4 +1,4 @@
-# ML Metadata for Model Governance
+# ML Metadata for Model Governance 
 
 
 * [Boris Lublinsky - Lightbend](mailto:boris.lublinsky@lightbend.com): See [Lightbend Platform](https://lightbend.com/lightbend-platform)
